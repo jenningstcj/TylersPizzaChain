@@ -10,6 +10,8 @@ namespace TylersPizzaChain.Database.Entities
 		[Key]
 		public Int32 Id { get; set; }
 		public string Name { get; set; } = string.Empty;
+
+		public virtual List<MenuItemPrice>? MenuItemPrices { get; set; }
 	}
 }
 

@@ -43,7 +43,7 @@ namespace TylersPizzaChain.Services
 		public async Task<OrderConfirmation> ProcessOrder(OrderDetails orderDetails)
 		{
 			//look up store
-			var store = _storeService.GetStoreById(orderDetails.StoreId);
+			var store = await _storeService.GetStoreById(orderDetails.StoreId);
 			if(store == null) { throw new OrderProcessingException("Store not found"); }
 
 
@@ -51,7 +51,7 @@ namespace TylersPizzaChain.Services
 			var latestStoreHours = await _storeService.GetStoreHours(store.Id);
 			if(latestStoreHours == null) { throw new OrderProcessingException("Store Hours not found"); }
 
-            var isOrderTimeValid = _storeHoursValidationService.ValidateOrderTime(orderDetails);
+            var isOrderTimeValid = _storeHoursValidationService.ValidateOrderTime(orderDetails, latestStoreHours, store.TimeZone);
 			if (!isOrderTimeValid) { throw new OrderProcessingException("Invalid store time"); }
 
 			//look up shopping cart
@@ -59,7 +59,7 @@ namespace TylersPizzaChain.Services
             if (shoppingCart == null) { throw new OrderProcessingException("Shopping Cart not found"); }
 
 			//validate shopping cart
-			var isSHoppingCardValid = await _shoppingCartService.ValidateShoppingCartToStore(orderDetails.ShoppingCartId, orderDetails.StoreId);
+			var isSHoppingCardValid = await _shoppingCartService.ValidateShoppingCartToStore(orderDetails.ShoppingCartId, store);
             if (!isSHoppingCardValid) { throw new OrderProcessingException("Shopping Cart is not valid"); }//TODO: return invalid items
 
 			//calculate order total
@@ -70,11 +70,11 @@ namespace TylersPizzaChain.Services
             //process payment
             var savedPayment = await _customerService.GetCustomerSavedPayment(orderDetails.CustomerId, orderDetails.PaymentId);
             if (savedPayment == null) { throw new OrderProcessingException("Saved Payment not found"); }
-            var paymentResponse = _paymentProcessorClient.ProcessPayment(savedPayment.VendorPaymentId, orderTotal);
+            var paymentResponse = await _paymentProcessorClient.ProcessPayment(savedPayment.VendorPaymentId, orderTotal);
 
 			//send to point of sale
 			var posResponse = await _pointOfSaleClient.SendToPointOfSale(orderDetails, shoppingCart);
-			if (!posResponse.IsSuccess) { throw new OrderProcessingException("Error sending to point of sale"); }
+			if (!posResponse.IsSuccess) { throw new OrderProcessingException("Error sending to point of sale"); }//perform cleanup on order
 
 			if(orderDetails.OrderType == OrderType.Delivery)
 			{

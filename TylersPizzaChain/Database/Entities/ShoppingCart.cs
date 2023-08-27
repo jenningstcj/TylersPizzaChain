@@ -10,7 +10,7 @@ namespace TylersPizzaChain.Database.Entities
 		public string CartDetails { get; set; } = string.Empty; //json stringified
 
 
-		[NotMapped]
+		[NotMapped]//TODO: setup for saving shopping cart details
 		public virtual List<MenuItemWithPrice>? MenuItems { get { return System.Text.Json.JsonSerializer.Deserialize<List<MenuItemWithPrice>>(this.CartDetails); } }
 
 	}

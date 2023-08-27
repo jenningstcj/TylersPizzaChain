@@ -10,7 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(_ =>
+{
+    var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml");
+    foreach (var xmlFile in xmlFiles)
+    {
+        _.IncludeXmlComments(xmlFile);
+    }
+    _.UseInlineDefinitionsForEnums();
+});
 
 builder.Services.AddDbContext<TylersPizzaDbContext>(
         options => options.UseInMemoryDatabase("tylerPizzaChain"));
@@ -28,11 +36,11 @@ builder.Services.AddTransient<IDoorDashClient, DoorDashClient>();
 builder.Services.AddTransient<IGrubHubClient, GrubHubClient>();
 builder.Services.AddTransient<IUberEatsClient, UberEatsClient>();
 
-builder.Services.AddHttpClient<DoorDashClient>(_ => _.BaseAddress = new Uri("http://localhost:8888"));
-builder.Services.AddHttpClient<GrubHubClient>(_ => _.BaseAddress = new Uri("http://localhost:8887"));
-builder.Services.AddHttpClient<UberEatsClient>(_ => _.BaseAddress = new Uri("http://localhost:8886"));
-builder.Services.AddHttpClient<PointOfSaleClient>(_ => _.BaseAddress = new Uri("http://localhost:8885"));
-builder.Services.AddHttpClient<PaymentProcessorClient>(_ => _.BaseAddress = new Uri("http://localhost:8884"));
+builder.Services.AddHttpClient<IDoorDashClient, DoorDashClient>(_ => _.BaseAddress = new Uri("http://localhost:8888"));
+builder.Services.AddHttpClient<IGrubHubClient, GrubHubClient>(_ => _.BaseAddress = new Uri("http://localhost:8887"));
+builder.Services.AddHttpClient<IUberEatsClient, UberEatsClient>(_ => _.BaseAddress = new Uri("http://localhost:8886"));
+builder.Services.AddHttpClient<IPointOfSaleClient, PointOfSaleClient>(_ => _.BaseAddress = new Uri("http://localhost:8885"));
+builder.Services.AddHttpClient<IPaymentProcessorClient, PaymentProcessorClient>(_ => _.BaseAddress = new Uri("http://localhost:8884"));
 
 var app = builder.Build();
 

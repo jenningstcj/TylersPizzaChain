@@ -10,10 +10,10 @@ namespace TylersPizzaChain.Database.Entities
 		[Key]
 		public Int64 Id { get; set; }
 		public Int64 MenuItemId { get; set; }
-		public ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
+		public virtual ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
 
 		public Int32 PricingTierId { get; set; }
-		public ICollection<PricingTier> PricingTiers { get; set; } = new List<PricingTier>();
+		public virtual PricingTier? PricingTier { get; set; }
 
 		public Decimal Price { get; set; }
 		public DateTime EffectiveDate { get; set; }

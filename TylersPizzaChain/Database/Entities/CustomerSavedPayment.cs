@@ -5,7 +5,7 @@ namespace TylersPizzaChain.Database.Entities
 	{
 		public Guid Id { get; set; }
 		public Guid CustomerId { get; set; }
-		public Customer Customer { get; set; } = new();
+		public virtual Customer? Customer { get; set; }
 
 		public string VendorPaymentId { get; set; } = string.Empty;
 		public CardTypes CardType { get; set; }

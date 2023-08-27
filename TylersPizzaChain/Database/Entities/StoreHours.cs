@@ -10,15 +10,16 @@ namespace TylersPizzaChain.Database.Entities
 		[Key]
 		public Int64 Id {get;set;}
 		public Int64 StoreId { get; set; }
-		public Store Store { get; set; } = new Store();
+		public virtual Store? Store { get; set; }
+		public string Hours { get; set; } = string.Empty;
 
-		public List<DayHours> Hours { get; set; } = new();
+		[NotMapped]//TODO: Setup for saving new hours
+		public virtual List<DayHours> HoursList { get { return System.Text.Json.JsonSerializer.Deserialize<List<DayHours>>(this.Hours) ?? new(); } }
 		public DateTime EffectiveDate { get; set; }
 
     }
 
 	public class DayHours {
-		[Key]
 		public DayOfWeek DayOfWeek { get; set; }
         public TimeSpan OpenTime { get; set; }
         public TimeSpan CloseTime { get; set; }

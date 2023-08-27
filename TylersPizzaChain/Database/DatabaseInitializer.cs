@@ -15,6 +15,7 @@ namespace TylersPizzaChain.Database
             try
             {
                 var context = services.GetRequiredService<TylersPizzaDbContext>();
+
                 context.Stores.Add(SeedData.Store);
                 context.SaveChanges();
 
@@ -68,8 +69,9 @@ namespace TylersPizzaChain.Database
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow,
             LastUpdatedBy = Guid.NewGuid(),
-            PricingTier = 1,
-            TaxRate = 0.07M
+            PricingTierId = 1,
+            TaxRate = 0.07M,
+            TimeZone = "US Eastern Standard Time"
         };
 
         public static StoreHours StoreHours = new StoreHours
@@ -80,7 +82,7 @@ namespace TylersPizzaChain.Database
             LastUpdatedBy = Guid.NewGuid(),
             EffectiveDate = DateTime.UtcNow.AddDays(-2),
             StoreId = 1,
-            Hours = new List<DayHours>
+            Hours = System.Text.Json.JsonSerializer.Serialize(new List<DayHours>
             {
                 new DayHours
                 {
@@ -124,7 +126,7 @@ namespace TylersPizzaChain.Database
                     OpenTime = new TimeSpan(8,0,0),
                     CloseTime = new TimeSpan(20,0,0)
                 },
-            }
+            })
         };
 
         public static Customer Customer = new Customer()

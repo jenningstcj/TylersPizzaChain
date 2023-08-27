@@ -7,7 +7,7 @@ namespace TylersPizzaChain.Database.Entities
 		public string FirstName { get; set; } = string.Empty;
 		public string LastName { get; set; } = string.Empty;
 
-		public List<CustomerSavedPayment> CustomerSavedPayments { get; set; } = new();
+		public virtual List<CustomerSavedPayment> CustomerSavedPayments { get; set; } = new();
 	}
 }
 

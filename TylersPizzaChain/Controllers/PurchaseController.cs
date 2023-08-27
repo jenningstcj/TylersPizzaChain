@@ -39,7 +39,7 @@ public class PurchaseController : ControllerBase
         }
         catch(OrderProcessingException ex)
         {
-            return new BadRequestObjectResult(new { }); //fill out error object
+            return new BadRequestObjectResult(new { Message = ex.Message }); //fill out error object
         }
     }
 }

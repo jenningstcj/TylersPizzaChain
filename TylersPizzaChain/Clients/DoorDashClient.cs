@@ -18,9 +18,12 @@ namespace TylersPizzaChain.Clients
             _httpClient = httpClient;
         }
 
-        public Task<DeliveryResponse> SendOrder(OrderDetails orderDetails, ShoppingCart shoppingCart)
+        public async Task<DeliveryResponse> SendOrder(OrderDetails orderDetails, ShoppingCart shoppingCart)
         {
-            throw new NotImplementedException();
+            //Let's fake it for now
+            //TODO: http call to mock food delivery service
+            await Task.Yield();
+            return new DeliveryResponse { IsSuccess = true };
         }
     }
 }

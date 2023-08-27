@@ -27,9 +27,15 @@ namespace TylersPizzaChain.Database
                 .HasMany(_ => _.MenuItemPrices)
                 .WithMany(_ => _.MenuItems);
 
-            modelBuilder.Entity<MenuItemPrice>();
+            modelBuilder.Entity<MenuItemPrice>()
+                .HasMany(_ => _.MenuItems)
+                .WithMany(_ => _.MenuItemPrices);
 
-            modelBuilder.Entity<PricingTier>();
+            modelBuilder.Entity<PricingTier>()
+                .HasMany(_ => _.MenuItemPrices)
+                .WithOne(_ => _.PricingTier)
+                .HasForeignKey(_ => _.PricingTierId)
+                .IsRequired();
 
             modelBuilder.Entity<Store>()
                 .HasMany(_ => _.StoreHours)
@@ -37,7 +43,11 @@ namespace TylersPizzaChain.Database
                 .HasForeignKey(_ => _.StoreId)
                 .IsRequired();
 
-            modelBuilder.Entity<StoreHours>();
+            modelBuilder.Entity<StoreHours>()
+                .HasOne(_ => _.Store)
+                .WithMany(_ => _.StoreHours)
+                .HasForeignKey(_ => _.StoreId)
+                .IsRequired();
 
             modelBuilder.Entity<ShoppingCart>();
 
