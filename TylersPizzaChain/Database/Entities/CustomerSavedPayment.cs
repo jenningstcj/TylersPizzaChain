@@ -8,9 +8,16 @@ namespace TylersPizzaChain.Database.Entities
 		public Customer Customer { get; set; } = new();
 
 		public string VendorPaymentId { get; set; } = string.Empty;
-		public string CardType { get; set; } = string.Empty;
+		public CardTypes CardType { get; set; }
 		public int ExpirationMonth { get; set; }
 		public int ExpirationYear { get; set; }
+	}
+
+	public enum CardTypes
+	{
+		Discover,
+		MasterCard,
+		Visa
 	}
 }
 

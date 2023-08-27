@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TylersPizzaChain.Database.Entities
 {
 	[Table("MenuItemPrice")]
-	public class MenuItemPrice
+	public class MenuItemPrice : Entity
 	{
 		[Key]
 		public Int64 Id { get; set; }

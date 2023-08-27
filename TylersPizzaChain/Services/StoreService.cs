@@ -31,6 +31,7 @@ namespace TylersPizzaChain.Services
 
 		public async Task<StoreHours?> GetStoreHours(Int64 storeId)
 		{
+			var allHours = await _dbContext.StoreHours.ToListAsync();
 			return await _dbContext.StoreHours
 				.Where(_ => _.StoreId == storeId)
 				.ByEffectiveDate(DateTime.UtcNow);

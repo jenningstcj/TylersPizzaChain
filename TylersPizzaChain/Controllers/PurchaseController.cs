@@ -18,6 +18,16 @@ public class PurchaseController : ControllerBase
         _orderService = orderService;
     }
 
+    /*
+     * {
+  "storeId": 1,
+  "shoppingCartId": "ada109ae-7244-496c-80cd-0c7bc7f3abcc",
+  "expectedOrderReadyTime": "2023-08-27T00:43:32.239Z",
+  "paymentId": "3e7a1033-4543-47d7-b3c7-62dbe3d79751",
+  "orderType": 2,
+  "customerId": "825a065b-3620-42af-bea2-935be9524f5c"
+}
+     */
     [HttpPost(Name = "Purchase")]
     public async Task<IActionResult> Post(OrderDetails orderDetails)
     {

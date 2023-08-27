@@ -9,8 +9,9 @@ namespace TylersPizzaChain.Database.Entities
 		public Guid Id { get; set; }
 		public string CartDetails { get; set; } = string.Empty; //json stringified
 
+
 		[NotMapped]
-		public virtual List<MenuItemWithPrice> MenuItems { get; set; } = new List<MenuItemWithPrice>();
+		public virtual List<MenuItemWithPrice>? MenuItems { get { return System.Text.Json.JsonSerializer.Deserialize<List<MenuItemWithPrice>>(this.CartDetails); } }
 
 	}
 }

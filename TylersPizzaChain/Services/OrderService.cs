@@ -63,8 +63,8 @@ namespace TylersPizzaChain.Services
             if (!isSHoppingCardValid) { throw new OrderProcessingException("Shopping Cart is not valid"); }//TODO: return invalid items
 
 			//calculate order total
-			var totalTax = shoppingCart.MenuItems.Aggregate(0M, (acc, val) => acc + (val.Price * val.TaxRate));
-            var subtotal = shoppingCart.MenuItems.Aggregate(0M, (acc, val) => acc + val.Price);
+			var totalTax = shoppingCart.MenuItems?.Aggregate(0M, (acc, val) => acc + (val.Price * val.TaxRate)) ?? 0;
+            var subtotal = shoppingCart.MenuItems?.Aggregate(0M, (acc, val) => acc + val.Price) ?? 0;
 			var orderTotal = subtotal + totalTax; //TODO: add delivery fee if applicable
 
             //process payment
