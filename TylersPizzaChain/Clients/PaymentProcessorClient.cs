@@ -1,11 +1,9 @@
-﻿using System;
-using System.Text;
-using TylersPizzaChain.Exceptions;
+﻿using System.Text;
 using TylersPizzaChain.Models;
 
 namespace TylersPizzaChain.Clients
 {
-	public interface IPaymentProcessorClient
+    public interface IPaymentProcessorClient
 	{
         Task<PaymentResponse> ProcessPayment(string vendorPaymentId, decimal amount);
 	}
@@ -21,9 +19,6 @@ namespace TylersPizzaChain.Clients
 
         public async Task<PaymentResponse> ProcessPayment(string vendorPaymentId, decimal amount)
         {
-            //Let's fake it for now
-            //TODO: http call to mock payment gateway
-
             var httpContent = new StringContent(
                 System.Text.Json.JsonSerializer.Serialize(new PaymentVendorChargeRequest { AmountInCents = amount * 100, PaymentId = vendorPaymentId }),
                 UnicodeEncoding.UTF8,
@@ -32,7 +27,9 @@ namespace TylersPizzaChain.Clients
             var httpResponse = await _httpClient.PostAsync("/card/charge", httpContent);
             if (httpResponse.IsSuccessStatusCode)
             {
-                return new PaymentResponse { AmountCharged = amount, IsSuccess = true };
+                string content = await httpResponse.Content.ReadAsStringAsync();
+                var responseData = System.Text.Json.JsonSerializer.Deserialize<PaymentVendorChargeResponse>(content);
+                return new PaymentResponse() { IsSuccess = responseData?.IsSuccess ?? false, AmountCharged = amount };
             }
             else
             {

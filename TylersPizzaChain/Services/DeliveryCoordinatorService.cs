@@ -1,5 +1,4 @@
-﻿using System;
-using TylersPizzaChain.Clients;
+﻿using TylersPizzaChain.Clients;
 using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Models;
 
@@ -7,7 +6,7 @@ namespace TylersPizzaChain.Services
 {
     public interface IDeliveryCoordinatorService
     {
-        Task<DeliveryResponse> SendOrderToDeliveryProvider(OrderDetails orderDetails, ShoppingCart shoppingCart);
+        Task<DeliveryResponse> SendOrderToDeliveryProvider(OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal);
     }
 
     public class DeliveryCoordinatorService : IDeliveryCoordinatorService
@@ -25,14 +24,14 @@ namespace TylersPizzaChain.Services
             _uberEatsClient = uberEatsClient;
         }
 
-        public async Task<DeliveryResponse> SendOrderToDeliveryProvider(OrderDetails orderDetails, ShoppingCart shoppingCart)
+        public async Task<DeliveryResponse> SendOrderToDeliveryProvider(OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal)
         {
             var r = new Random().Next(1, 3);
             var response = r switch
             {
-                1 => await _doorDashClient.SendOrder(orderDetails, shoppingCart),
-                2 => await _grubHubClient.SendOrder(orderDetails, shoppingCart),
-                3 => await _uberEatsClient.SendOrder(orderDetails, shoppingCart),
+                1 => await _doorDashClient.SendOrder(orderDetails, shoppingCart, store, orderTotal),
+                2 => await _grubHubClient.SendOrder(orderDetails, shoppingCart, store, orderTotal),
+                3 => await _uberEatsClient.SendOrder(orderDetails, shoppingCart, store, orderTotal),
                 _ => throw new NotImplementedException()
             };
             return response;

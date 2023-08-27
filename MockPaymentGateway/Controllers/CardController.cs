@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MockPaymentGateway.Controllers;
 
@@ -31,7 +32,9 @@ public class CardController : ControllerBase
 
     public class ChargeRequest
     {
+        [Required]
         public string PaymentId { get; set; } = string.Empty;
+        [Required]
         public Decimal AmountInCents { get; set; }
     }
 

@@ -23,6 +23,7 @@
 		<None Remove="Clients\" />
 		<None Remove="Exceptions\" />
 		<None Remove="Extensions\" />
+		<None Remove="Models\VendorModels\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Database\" />
@@ -32,5 +33,6 @@
 		<Folder Include="Clients\" />
 		<Folder Include="Exceptions\" />
 		<Folder Include="Extensions\" />
+		<Folder Include="Models\VendorModels\" />
 	</ItemGroup>
 </Project>

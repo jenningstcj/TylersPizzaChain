@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TylersPizzaChain.Database;
 using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Extensions;
 
 namespace TylersPizzaChain.Services
 {
-	public interface IStoreService
+    public interface IStoreService
 	{
 		Task<Store?> GetStoreById(Int64 id);
 		Task<StoreHours?> GetStoreHours(Int64 storeId);

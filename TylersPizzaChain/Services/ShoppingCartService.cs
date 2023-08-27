@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TylersPizzaChain.Database;
 using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Models;
 
 namespace TylersPizzaChain.Services
 {
-	public interface IShoppingCartService
+    public interface IShoppingCartService
 	{
 		Task<ShoppingCart?> GetShoppingCartById(Guid id);
 		Task<bool> ValidateShoppingCartToStore(Guid shoppingCartId, Store store);

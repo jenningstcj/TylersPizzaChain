@@ -1,12 +1,10 @@
-﻿using System;
-using TylersPizzaChain.Clients;
-using TylersPizzaChain.Database;
+﻿using TylersPizzaChain.Clients;
 using TylersPizzaChain.Exceptions;
 using TylersPizzaChain.Models;
 
 namespace TylersPizzaChain.Services
 {
-	public interface IOrderService
+    public interface IOrderService
 	{
 		Task<OrderConfirmation> ProcessOrder(OrderDetails orderDetails);
 
@@ -63,7 +61,7 @@ namespace TylersPizzaChain.Services
             if (!isSHoppingCardValid) { throw new OrderProcessingException("Shopping Cart is not valid"); }//TODO: return invalid items
 
 			//calculate order total
-			var totalTax = shoppingCart.MenuItems?.Aggregate(0M, (acc, val) => acc + (val.Price * val.TaxRate)) ?? 0;
+			var totalTax = Math.Round(shoppingCart.MenuItems?.Aggregate(0M, (acc, val) => acc + (val.Price * val.TaxRate)) ?? 0, 2);
             var subtotal = shoppingCart.MenuItems?.Aggregate(0M, (acc, val) => acc + val.Price) ?? 0;
 			var orderTotal = subtotal + totalTax; //TODO: add delivery fee if applicable
 
@@ -71,6 +69,7 @@ namespace TylersPizzaChain.Services
             var savedPayment = await _customerService.GetCustomerSavedPayment(orderDetails.CustomerId, orderDetails.PaymentId);
             if (savedPayment == null) { throw new OrderProcessingException("Saved Payment not found"); }
             var paymentResponse = await _paymentProcessorClient.ProcessPayment(savedPayment.VendorPaymentId, orderTotal);
+			if (!paymentResponse.IsSuccess) { throw new OrderProcessingException("Payment failed"); }//TODO: parse why payment failed to notify customer
 
 			//send to point of sale
 			var posResponse = await _pointOfSaleClient.SendToPointOfSale(orderDetails, shoppingCart);
@@ -79,7 +78,8 @@ namespace TylersPizzaChain.Services
 			if(orderDetails.OrderType == OrderType.Delivery)
 			{
 				//send to a delivery vendor
-				var deliveryResponse = await _deliveryCoordinatorService.SendOrderToDeliveryProvider(orderDetails, shoppingCart);
+				var deliveryResponse = await _deliveryCoordinatorService.SendOrderToDeliveryProvider(orderDetails, shoppingCart, store, orderTotal);
+				if (!deliveryResponse.IsSuccess) { throw new OrderProcessingException("Could not notify deliver provider"); }
 			}
 
             //send back confirmation

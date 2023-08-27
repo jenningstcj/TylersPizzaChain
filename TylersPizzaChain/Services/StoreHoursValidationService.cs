@@ -1,5 +1,4 @@
-﻿using System;
-using TylersPizzaChain.Database.Entities;
+﻿using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Exceptions;
 using TylersPizzaChain.Models;
 
