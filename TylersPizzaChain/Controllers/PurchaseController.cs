@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TylersPizzaChain.Exceptions;
 using TylersPizzaChain.Models;
-using TylersPizzaChain.Services;
+using TylersPizzaChain.Pipelines;
 
 namespace TylersPizzaChain.Controllers;
 
@@ -10,12 +10,12 @@ namespace TylersPizzaChain.Controllers;
 public class PurchaseController : ControllerBase
 {
     private readonly ILogger<PurchaseController> _logger;
-    private readonly IOrderService _orderService;
+    private readonly ImpureDependencies _impureDependenices;
 
-    public PurchaseController(ILogger<PurchaseController> logger, IOrderService orderService)
+    public PurchaseController(ILogger<PurchaseController> logger, ImpureDependencies impureDependencies)
     {
         _logger = logger;
-        _orderService = orderService;
+        _impureDependenices = impureDependencies;
     }
 
     /*
@@ -33,13 +33,13 @@ public class PurchaseController : ControllerBase
     {
         try
         {
-            var confirmation = await _orderService.ProcessOrder(orderDetails);
+            var confirmation = await ProcessOrderPipeline.Execute(_impureDependenices, orderDetails);
 
             return new OkObjectResult(confirmation);
         }
         catch(OrderProcessingException ex)
         {
-            return new BadRequestObjectResult(new { Message = ex.Message }); //fill out error object
+            return new BadRequestObjectResult(new { ex.Message }); //fill out error object
         }
     }
 }

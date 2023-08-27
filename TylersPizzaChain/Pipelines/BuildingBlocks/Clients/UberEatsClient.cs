@@ -2,28 +2,18 @@
 using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Models;
 
-namespace TylersPizzaChain.Clients
+namespace TylersPizzaChain.Pipelines.BuildingBlocks.Clients
 {
-    public interface IDoorDashClient
+    public static class UberEatsClient
 	{
-        Task<DeliveryResponse> SendOrder(OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal ordertotal);
-    }
-
-	public class DoorDashClient : IDoorDashClient
-	{
-        private readonly HttpClient _httpClient;
-
-        public DoorDashClient(HttpClient httpClient)
+        public static async Task<DeliveryResponse> SendOrder(IHttpClientFactory httpClientFactory, OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal)
         {
-            _httpClient = httpClient;
-        }
+            var httpClient = httpClientFactory.CreateClient("UberEatsClient");
 
-        public async Task<DeliveryResponse> SendOrder(OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal)
-        {
             var httpContent = new StringContent(
-                System.Text.Json.JsonSerializer.Serialize(new DoorDashRequest
+                System.Text.Json.JsonSerializer.Serialize(new UberEatsRequest
                 {
-                    CustomerAddress = new DoorDashAddress
+                    CustomerAddress = new UberEatsAddress
                     {
                         Address1 = orderDetails.DeliveryAddress!.Address1,
                         Address2 = orderDetails.DeliveryAddress.Address2,
@@ -32,7 +22,7 @@ namespace TylersPizzaChain.Clients
                         Zip = orderDetails.DeliveryAddress.Zip
                     },
                     OrderAmount = orderTotal,
-                    StoreAddress = new DoorDashAddress
+                    StoreAddress = new UberEatsAddress
                     {
                         Address1 = store.Address1,
                         Address2 = store.Address2,
@@ -44,7 +34,7 @@ namespace TylersPizzaChain.Clients
                     StoreId = orderDetails.StoreId,
                     WhenCustomerExpectsFood = orderDetails.WhenCustomerExpectsFood,
                     Items = (shoppingCart.MenuItems ?? Enumerable.Empty<MenuItemWithPrice>())
-                    .Select(_ => new DoorDashMenuItem
+                    .Select(_ => new UberEatsMenuItem
                     {
                         Id = _.Id,
                         Price = _.Price,
@@ -54,10 +44,10 @@ namespace TylersPizzaChain.Clients
                 UnicodeEncoding.UTF8,
                 "application/json"
                 );
-            var httpResponse = await _httpClient.PostAsync("/order/submit", httpContent);
+            var httpResponse = await httpClient.PostAsync("/order/submit", httpContent);
             if (httpResponse.IsSuccessStatusCode)
             {
-                var responseData = System.Text.Json.JsonSerializer.Deserialize<DoorDashResponse>(await httpResponse.Content.ReadAsStringAsync());
+                var responseData = System.Text.Json.JsonSerializer.Deserialize<UberEatsResponse>(await httpResponse.Content.ReadAsStringAsync());
                 return new DeliveryResponse() { IsSuccess = responseData?.IsSuccess ?? false };
             }
             else

@@ -1,30 +1,19 @@
 ﻿using System.Text;
 using TylersPizzaChain.Models;
 
-namespace TylersPizzaChain.Clients
+namespace TylersPizzaChain.Pipelines.BuildingBlocks.Clients
 {
-    public interface IPaymentProcessorClient
+	public static class PaymentProcessorClient
 	{
-        Task<PaymentResponse> ProcessPayment(string vendorPaymentId, decimal amount);
-	}
-
-	public class PaymentProcessorClient : IPaymentProcessorClient
-	{
-        private readonly HttpClient _httpClient;
-
-        public PaymentProcessorClient(HttpClient httpClient)
+        public static async Task<PaymentResponse> ProcessPayment(IHttpClientFactory httpClientFactory, string vendorPaymentId, decimal amount)
         {
-            _httpClient = httpClient;
-        }
-
-        public async Task<PaymentResponse> ProcessPayment(string vendorPaymentId, decimal amount)
-        {
+            var httpClient = httpClientFactory.CreateClient("PaymentProcessorClient");
             var httpContent = new StringContent(
                 System.Text.Json.JsonSerializer.Serialize(new PaymentVendorChargeRequest { AmountInCents = amount * 100, PaymentId = vendorPaymentId }),
                 UnicodeEncoding.UTF8,
                 "application/json"
                 );
-            var httpResponse = await _httpClient.PostAsync("/card/charge", httpContent);
+            var httpResponse = await httpClient.PostAsync("/card/charge", httpContent);
             if (httpResponse.IsSuccessStatusCode)
             {
                 string content = await httpResponse.Content.ReadAsStringAsync();

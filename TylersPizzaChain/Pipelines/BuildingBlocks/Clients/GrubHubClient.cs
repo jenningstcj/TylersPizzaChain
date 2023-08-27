@@ -2,24 +2,14 @@
 using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Models;
 
-namespace TylersPizzaChain.Clients
+namespace TylersPizzaChain.Pipelines.BuildingBlocks.Clients
 {
-    public interface IGrubHubClient
+    public static class GrubHubClient
 	{
-        Task<DeliveryResponse> SendOrder(OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal);
-	}
-
-	public class GrubHubClient : IGrubHubClient
-	{
-        private readonly HttpClient _httpClient;
-
-        public GrubHubClient(HttpClient httpClient)
+        public static async Task<DeliveryResponse> SendOrder(IHttpClientFactory httpClientFactory, OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal)
         {
-            _httpClient = httpClient;
-        }
+            var httpClient = httpClientFactory.CreateClient("GrubHubClient");
 
-        public async Task<DeliveryResponse> SendOrder(OrderDetails orderDetails, ShoppingCart shoppingCart, Store store, Decimal orderTotal)
-        {
             var httpContent = new StringContent(
                 System.Text.Json.JsonSerializer.Serialize(new GrubHubRequest
                 {
@@ -54,7 +44,7 @@ namespace TylersPizzaChain.Clients
                 UnicodeEncoding.UTF8,
                 "application/json"
                 );
-            var httpResponse = await _httpClient.PostAsync("/order/submit", httpContent);
+            var httpResponse = await httpClient.PostAsync("/order/submit", httpContent);
             if (httpResponse.IsSuccessStatusCode)
             {
                 var responseData = System.Text.Json.JsonSerializer.Deserialize<GrubHubResponse>(await httpResponse.Content.ReadAsStringAsync());

@@ -3,25 +3,14 @@ using TylersPizzaChain.Database.Entities;
 using TylersPizzaChain.Exceptions;
 using TylersPizzaChain.Models;
 
-namespace TylersPizzaChain.Clients
+namespace TylersPizzaChain.Pipelines.BuildingBlocks.Clients
 {
-    public interface IPointOfSaleClient
+	public static class PointOfSaleClient
 	{
-        Task<PointOfSaleResponse> SendToPointOfSale(OrderDetails orderDetails, ShoppingCart shoppingCart);
-	}
-
-	public class PointOfSaleClient : IPointOfSaleClient
-	{
-        private readonly HttpClient _httpClient;
-
-        public PointOfSaleClient(HttpClient httpClient)
+        public static async Task<PointOfSaleResponse> SendToPointOfSale(IHttpClientFactory httpClientFactory, OrderDetails orderDetails, ShoppingCart shoppingCart)
         {
-            _httpClient = httpClient;
-        }
+            var httpClient = httpClientFactory.CreateClient("PointOfSaleClient");
 
-
-        public async Task<PointOfSaleResponse> SendToPointOfSale(OrderDetails orderDetails, ShoppingCart shoppingCart)
-        {
             var httpContent = new StringContent(
                 System.Text.Json.JsonSerializer.Serialize(new PointOfSaleRequest {
                     DeliveryAddress = orderDetails.DeliveryAddress == null
@@ -37,7 +26,7 @@ namespace TylersPizzaChain.Clients
                         },
                     StoreId = orderDetails.StoreId,
                     WhenCustomerExpectsFood = orderDetails.WhenCustomerExpectsFood,
-                    Items = shoppingCart.MenuItems.Select(_ => new PointOfSaleMenuItem
+                    Items = (shoppingCart.MenuItems ?? Enumerable.Empty<MenuItemWithPrice>()).Select(_ => new PointOfSaleMenuItem
                     {
                         Id = _.Id,
                         Price = _.Price,
@@ -47,7 +36,7 @@ namespace TylersPizzaChain.Clients
                 UnicodeEncoding.UTF8,
                 "application/json"
                 );
-            var httpResponse = await _httpClient.PostAsync("/order/submit", httpContent);
+            var httpResponse = await httpClient.PostAsync("/order/submit", httpContent);
             if (httpResponse.IsSuccessStatusCode)
             {
                 var responseData = System.Text.Json.JsonSerializer.Deserialize<PointOfSaleResponse>(await httpResponse.Content.ReadAsStringAsync());
@@ -59,7 +48,7 @@ namespace TylersPizzaChain.Clients
             }
         }
 
-        private PointOfSaleDeliveryAddress MapDeliveryAddress(DeliveryAddress deliveryAddress)
+        private static PointOfSaleDeliveryAddress MapDeliveryAddress(DeliveryAddress deliveryAddress)
         {
             return new PointOfSaleDeliveryAddress
             {

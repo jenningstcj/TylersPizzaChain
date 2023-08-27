@@ -17,22 +17,24 @@
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="Database\" />
-		<None Remove="Services\" />
 		<None Remove="Models\" />
 		<None Remove="Database\Entities\" />
-		<None Remove="Clients\" />
 		<None Remove="Exceptions\" />
-		<None Remove="Extensions\" />
 		<None Remove="Models\VendorModels\" />
+		<None Remove="Pipelines\" />
+		<None Remove="Pipelines\BuildingBlocks\" />
+		<None Remove="Pipelines\BuildingBlocks\DatabaseQueries\" />
+		<None Remove="Pipelines\BuildingBlocks\Clients\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Database\" />
-		<Folder Include="Services\" />
 		<Folder Include="Models\" />
 		<Folder Include="Database\Entities\" />
-		<Folder Include="Clients\" />
 		<Folder Include="Exceptions\" />
-		<Folder Include="Extensions\" />
 		<Folder Include="Models\VendorModels\" />
+		<Folder Include="Pipelines\" />
+		<Folder Include="Pipelines\BuildingBlocks\" />
+		<Folder Include="Pipelines\BuildingBlocks\DatabaseQueries\" />
+		<Folder Include="Pipelines\BuildingBlocks\Clients\" />
 	</ItemGroup>
 </Project>
