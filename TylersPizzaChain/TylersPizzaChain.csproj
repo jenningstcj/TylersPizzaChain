@@ -25,6 +25,7 @@
 		<None Remove="Pipelines\BuildingBlocks\" />
 		<None Remove="Pipelines\BuildingBlocks\DatabaseQueries\" />
 		<None Remove="Pipelines\BuildingBlocks\Clients\" />
+		<None Remove="Pipelines\BuildingBlocks\CompositionHelpers\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Database\" />
@@ -36,5 +37,6 @@
 		<Folder Include="Pipelines\BuildingBlocks\" />
 		<Folder Include="Pipelines\BuildingBlocks\DatabaseQueries\" />
 		<Folder Include="Pipelines\BuildingBlocks\Clients\" />
+		<Folder Include="Pipelines\BuildingBlocks\CompositionHelpers\" />
 	</ItemGroup>
 </Project>
