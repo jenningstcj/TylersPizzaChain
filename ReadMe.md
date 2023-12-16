@@ -1,4 +1,5 @@
 This is a sample (incomplete) app to show two basic approaches to writing software.  
 - One [branch](https://github.com/jenningstcj/TylersPizzaChain/tree/1-ObjectOrientedProgrammingStyle) shows the classic route of creating interfaces and Dependency Injection/IOC Container for most all resources.  
 - Another [branch shows how the use of pure functions](https://github.com/jenningstcj/TylersPizzaChain/tree/2-PureFunctions) can minimize IOC container usage, while creating declarative pipelines for workflows that still maintains the same SOLID principles.
-- A third branch coming soon will show to power of Result types for error handling.
+- Two other branches [show refactoring for composition](https://github.com/jenningstcj/TylersPizzaChain/tree/3-Composition-Refactor-Part1) and then [subsequent cleanup for readability](https://github.com/jenningstcj/TylersPizzaChain/tree/3-Composition-Refactor-Part2).
+- Another branch coming soon will show to power of Result types for error handling.
